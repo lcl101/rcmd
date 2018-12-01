@@ -8,7 +8,6 @@ import (
 
 var (
 	//StrKey 加密key
-	// StrKey = "Sl@20181125#5L|5l&2018"
 	StrKey = "Sl"
 )
 
