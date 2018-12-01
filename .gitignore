@@ -3,6 +3,7 @@ rcmd/rcmd
 rcmd-e
 al/al
 my.sh
+my.conf
 *.log
 releases/*
 r.sh
