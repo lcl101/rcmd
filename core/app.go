@@ -23,6 +23,11 @@ const (
 	IndexTypeGroup
 )
 
+const (
+	//SP 显示名称的空格
+	SP = "                    "
+)
+
 //Group 分组
 type Group struct {
 	GroupName string   `json:"group_name"`
@@ -54,7 +59,7 @@ type App struct {
 }
 
 //Init 执行脚本
-func (app *App) Init() {
+func (app *App) Init(serverName string) {
 	app.serverIndex = make(map[string]ServerIndex)
 
 	// 解析配置
@@ -62,7 +67,25 @@ func (app *App) Init() {
 
 	app.loadServerMap(true)
 
-	app.show()
+	/**
+	server := app.serverIndex[input].server
+	Printer.Infoln("你选择了", server.Name)
+	Log.Category("app").Info("select server", server.Name)
+	server.Connect()
+	**/
+	if serverName == "" {
+		app.show()
+	} else {
+		servers := app.config.Servers
+		var s Server
+		for _, v := range servers {
+			if v.Name == serverName {
+				s = v
+				break
+			}
+		}
+		s.Connect()
+	}
 }
 
 func (app *App) saveAndReload() {
@@ -312,9 +335,9 @@ func (app *App) showServers() {
 	Printer.Info("请输入序号或操作: ")
 }
 
-func (app *App) formatSeparator(title string, c string, maxlength float64) {
+func (app *App) formatSeparator(title string, c string, maxlength int) {
 
-	charslen := int((maxlength - ZhLen(title)) / 2)
+	charslen := int((maxlength - ZhLen(title)) / 2.0)
 	chars := ""
 	for i := 0; i < charslen; i++ {
 		chars += c
@@ -323,15 +346,14 @@ func (app *App) formatSeparator(title string, c string, maxlength float64) {
 	Printer.Infoln(chars + title + chars)
 }
 
-func (app *App) separatorLength() float64 {
-	maxlength := 50.0
+func (app *App) separatorLength() int {
+	maxlength := 50
 	for _, group := range app.config.Groups {
 		length := ZhLen(group.GroupName)
 		if length > maxlength {
 			maxlength = length + 10
 		}
 	}
-
 	return maxlength
 }
 
@@ -380,9 +402,11 @@ func (app *App) loadServerMap(check bool) {
 }
 
 func (app *App) recordServer(flag string, server Server) string {
+	name := server.Name
 	if app.config.ShowDetail {
-		return " [" + flag + "]" + "\t" + server.Name + " [" + server.User + "@" + server.IP + "]"
+		name = name + SP[:len(SP)-ZhLen(name)]
+		return " [" + flag + "]" + "\t" + name + " [" + server.User + "@" + server.IP + "]"
 	} else {
-		return " [" + flag + "]" + "\t" + server.Name
+		return " [" + flag + "]" + "\t" + name
 	}
 }

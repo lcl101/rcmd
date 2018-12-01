@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT="rcmd"
-VERSION="v0.2.0"
+VERSION="v0.2.1"
 BUILD=`date +%Y%m%d`
 KEY="ZhRMghgWs&sJrmWs@Sl-CDCN"
 function build() {

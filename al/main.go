@@ -4,20 +4,22 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/lcl101/rcmd/core"
 )
 
 var (
+	//Version 版本信息
 	Version = "0.1.0"
-	Build   = "20181130"
+	//Build 编译时间
+	Build = "20181130"
 )
 
 var (
 	version = flag.Bool("v", false, "版本信息")
 	help    = flag.Bool("help", false, "帮助")
 	config  = flag.String("c", "", "配置文件，默认al.conf")
+	en      = flag.String("e", "", "加密密码")
 )
 
 func main() {
@@ -31,7 +33,24 @@ func main() {
 		os.Exit(0)
 	}
 
-	core.Log.Category("main").Info("key=", core.StrKey)
+	if *en != "" {
+		s, err := core.Encrypt(*en)
+		if err != nil {
+			fmt.Println("en error: ", err)
+		} else {
+			fmt.Println(s)
+		}
+		os.Exit(0)
+	}
+
+	serverName := ""
+	if len(os.Args) > 1 {
+		serverName = os.Args[1]
+	}
+
+	core.Log.Category("main").Info("serverName: ", serverName)
+
+	// core.Log.Category("main").Info("key=", core.StrKey)
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -40,8 +59,9 @@ func main() {
 	}()
 	conf := ""
 	if *config == "" {
-		tmp, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-		conf = tmp + "/al.conf"
+		// tmp, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+		tmp, _ := core.GetExecPath()
+		conf = tmp + "al.conf"
 	} else {
 		conf, _ = core.ParsePath(*config)
 	}
@@ -61,7 +81,7 @@ func main() {
 	app := core.App{
 		ConfigPath: conf,
 	}
-	app.Init()
+	app.Init(serverName)
 }
 
 // 版本信息

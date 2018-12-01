@@ -33,17 +33,36 @@ func Clear() {
 	cmd.Run()
 }
 
+//GetExecPath 获取当前路径
+func GetExecPath() (string, error) {
+	file, err := exec.LookPath(os.Args[0])
+	if err != nil {
+		return "", err
+	}
+	path, err := filepath.Abs(file)
+	if err != nil {
+		return "", err
+	}
+	i := strings.LastIndex(path, "/")
+	if i < 0 {
+		i = strings.LastIndex(path, "\\")
+	}
+	if i < 0 {
+		return "", errors.New(`error: Can't find "/" or "\"`)
+	}
+	return string(path[0 : i+1]), nil
+}
+
 //ZhLen 计算字符宽度（中文）
-func ZhLen(str string) float64 {
-	length := 0.0
+func ZhLen(str string) int {
+	length := 0
 	for _, c := range str {
 		if unicode.Is(unicode.Scripts["Han"], c) {
 			length += 2
 		} else {
-			length += 1
+			length++
 		}
 	}
-
 	return length
 }
 
@@ -64,6 +83,7 @@ func ParseAuthMethods(passwd, key string) ([]ssh.AuthMethod, error) {
 	sshs := []ssh.AuthMethod{}
 
 	if passwd != "" {
+
 		sshs = append(sshs, ssh.Password(passwd))
 		return sshs, nil
 	}

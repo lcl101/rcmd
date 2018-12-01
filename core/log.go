@@ -11,10 +11,12 @@ type logger struct {
 	level    string
 }
 
+//Log 全局log
 var Log logger
 
 func init() {
-	logFile, _ := ParsePath("./app.log")
+	path, _ := GetExecPath()
+	logFile, _ := ParsePath(path + "al.log")
 	Log = logger{
 		File: logFile,
 	}

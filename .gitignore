@@ -7,3 +7,4 @@ my.conf
 *.log
 releases/*
 r.sh
+test

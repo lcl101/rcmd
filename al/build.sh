@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT="al"
-VERSION="v0.1.0"
+VERSION="v0.1.5"
 BUILD=`date +%Y%m%d`
 KEY="ZhRMghgWs&sJrmWs@Sl-CDCN"
 function build() {
