@@ -1,4 +1,4 @@
-package cmd
+package core
 
 import (
 	"flag"
@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/juju/errors"
-
 	"golang.org/x/crypto/ssh"
 )
 

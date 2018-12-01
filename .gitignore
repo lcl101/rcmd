@@ -1,2 +1,8 @@
 .vscode/*
-rcmd
+rcmd/rcmd
+rcmd-e
+al/al
+my.sh
+*.log
+releases/*
+r.sh

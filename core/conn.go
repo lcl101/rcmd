@@ -1,4 +1,4 @@
-package cmd
+package core
 
 import (
 	"fmt"
@@ -21,9 +21,13 @@ type SSHConn struct {
 
 // Conn 用于连接主机
 func (s *SSHConn) Conn() error {
-	auth := make([]ssh.AuthMethod, 0)
-	auth = append(auth, ssh.Password(s.Password))
+	// auth := make([]ssh.AuthMethod, 0)
+	// auth = append(auth, ssh.Password(s.Password))
 
+	auth, err := ParseAuthMethods(s.Password, s.Key)
+	if err != nil {
+		return err
+	}
 	var config ssh.Config
 	if len(s.CipherList) == 0 {
 		config = ssh.Config{
