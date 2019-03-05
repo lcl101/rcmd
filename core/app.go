@@ -58,6 +58,30 @@ type App struct {
 	serverIndex map[string]ServerIndex
 }
 
+//ShowPasswd 获取加密密码
+func (app *App) ShowPasswd(serverName string) string {
+	if serverName == "" {
+		return ""
+	}
+	app.serverIndex = make(map[string]ServerIndex)
+	// 解析配置
+	app.loadConfig()
+	app.loadServerMap(true)
+	servers := app.config.Servers
+	var s Server
+	for _, v := range servers {
+		if v.Name == serverName {
+			s = v
+			break
+		}
+	}
+
+	if s.Password != "" {
+		return s.Password
+	}
+	return serverName
+}
+
 //Init 执行脚本
 func (app *App) Init(serverName string) {
 	app.serverIndex = make(map[string]ServerIndex)
@@ -67,12 +91,6 @@ func (app *App) Init(serverName string) {
 
 	app.loadServerMap(true)
 
-	/**
-	server := app.serverIndex[input].server
-	Printer.Infoln("你选择了", server.Name)
-	Log.Category("app").Info("select server", server.Name)
-	server.Connect()
-	**/
 	if serverName == "" {
 		app.show()
 	} else {
@@ -84,7 +102,11 @@ func (app *App) Init(serverName string) {
 				break
 			}
 		}
-		s.Connect()
+		if s.Name != "" {
+			s.Connect()
+		} else {
+			app.show()
+		}
 	}
 }
 

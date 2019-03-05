@@ -10,9 +10,9 @@ import (
 
 var (
 	//Version 版本信息
-	Version = "0.1.0"
+	Version = "0.1.1"
 	//Build 编译时间
-	Build = "20181130"
+	Build = "20190301"
 )
 
 var (
@@ -20,6 +20,7 @@ var (
 	help    = flag.Bool("help", false, "帮助")
 	config  = flag.String("c", "", "配置文件，默认al.conf")
 	en      = flag.String("e", "", "加密密码")
+	de      = flag.String("d", "", "licl")
 )
 
 func main() {
@@ -32,8 +33,8 @@ func main() {
 		v()
 		os.Exit(0)
 	}
-
 	if *en != "" {
+		fmt.Println(*en)
 		s, err := core.Encrypt(*en)
 		if err != nil {
 			fmt.Println("en error: ", err)
@@ -42,15 +43,6 @@ func main() {
 		}
 		os.Exit(0)
 	}
-
-	serverName := ""
-	if len(os.Args) > 1 {
-		serverName = os.Args[1]
-	}
-
-	core.Log.Category("main").Info("serverName: ", serverName)
-
-	// core.Log.Category("main").Info("key=", core.StrKey)
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -81,6 +73,25 @@ func main() {
 	app := core.App{
 		ConfigPath: conf,
 	}
+
+	if *de != "" {
+		fmt.Println("主机信息：", *de)
+		d := app.ShowPasswd(*de)
+		s, err := core.Decrypt(d)
+		if err != nil {
+			fmt.Println("de error: ", err)
+		} else {
+			fmt.Println(s)
+		}
+		os.Exit(0)
+	}
+
+	serverName := ""
+	if len(os.Args) > 1 {
+		serverName = os.Args[1]
+	}
+
+	core.Log.Category("main").Info("serverName: ", serverName)
 	app.Init(serverName)
 }
 
