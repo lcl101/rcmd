@@ -29,6 +29,7 @@ func main() {
 		flag.Usage()
 		os.Exit(0)
 	}
+	
 	if *version {
 		v()
 		os.Exit(0)

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/lcl101/rcmd/core"
 )
@@ -85,9 +86,28 @@ func main() {
 		fmt.Println(str)
 	} else if *op == "cp" {
 		//scp
-		err := core.Scp(conn.Client(), *spath, *dpath)
+		// err := core.Scp(conn.Client(), *spath, *dpath)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+		session, err := conn.Client().NewSession()
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(1)
+		}
+		defer session.Close()
+		sc, err := core.NewSessionClient(session)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		rp, rf := filepath.Split(*spath)
+		lp, lf := filepath.Split(*dpath)
+		err = sc.Send(rp, rf, lp, lf)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 	} else {
 		fmt.Println("不支持这个命令,-o仅支持cmd或者cp")

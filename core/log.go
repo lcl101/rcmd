@@ -3,6 +3,7 @@ package core
 import (
 	"log"
 	"os"
+	"path/filepath"
 )
 
 type logger struct {
@@ -16,7 +17,13 @@ var Log logger
 
 func init() {
 	path, _ := GetExecPath()
-	logFile, _ := ParsePath(path + "al.log")
+	_, fn := filepath.Split(os.Args[0])
+	if fn == "" {
+		fn = "al.log"
+	} else {
+		fn = fn + ".log"
+	}
+	logFile, _ := ParsePath(path + fn)
 	Log = logger{
 		File: logFile,
 	}

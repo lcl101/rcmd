@@ -58,6 +58,24 @@ type App struct {
 	serverIndex map[string]ServerIndex
 }
 
+func (app *App) GetServer(serverName string) *Server {
+	if serverName == "" {
+		return nil
+	}
+	app.serverIndex = make(map[string]ServerIndex)
+	// 解析配置
+	app.loadConfig()
+	app.loadServerMap(true)
+	servers := app.config.Servers
+
+	for _, v := range servers {
+		if v.Name == serverName {
+			return &v
+		}
+	}
+	return nil
+}
+
 //ShowPasswd 获取加密密码
 func (app *App) ShowPasswd(serverName string) string {
 	if serverName == "" {
