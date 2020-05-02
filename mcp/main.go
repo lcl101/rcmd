@@ -118,6 +118,7 @@ func main() {
 	var rp, rf, lp, lf string
 	//处理本地相对地址 下载
 	if method == 1 {
+		// 判读本地路径是否带文件名
 		isDir := strings.HasSuffix(path1, "/")
 		if strings.Index(path1, "./") >= 0 {
 			path1 = filepath.Join(core.GetCurrentDirectory(), path1)
